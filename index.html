@@ -16,22 +16,41 @@
     <div class="main-container">
         <div class="sidebar">
             <h3>EXPLORER</h3>
-            <p> src</p>
-            <p>&nbsp;&nbsp; index.html</p>
-            <p>&nbsp;&nbsp; style.css</p>
-            <p>&nbsp;&nbsp; script.js</p>
+            <div class="folder-section">
+                <span class="folder-title">src</span>
+                <div class="file-list">
+                    <p class="file-item active" id="file-html" onclick="switchFile('index.html')">index.html</p>
+                    <p class="file-item" id="file-css" onclick="switchFile('style.css')">style.css</p>
+                    <p class="file-item" id="file-js" onclick="switchFile('script.js')">script.js</p>
+                </div>
+            </div>
         </div>
         
         <div class="editor-area">
+            <div class="editor-tab" id="currentTab">index.html</div>
             <div class="editor">
-                <p><span style="color:#569cd6;">function</span> <span style="color:#dcdcaa;">startAssignment</span>() {</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe;">console</span>.<span style="color:#dcdcaa;">log</span>(<span style="color:#ce9178;">"인증 시스템 모듈화 완료!"</span>);</p>
-                <p>}</p>
+                <pre><code id="codeArea"></code></pre>
             </div>
             
-            <div class="terminal">
-                <div class="terminal-header">Terminal</div>
-                <p style="color: #3fb950;">user@workspace:~$ <span style="color: #cccccc; animation: blink 1s step-end infinite;">_</span></p>
+            <div class="bottom-panel">
+                <div class="panel-tabs">
+                    <span class="panel-tab active" id="tab-terminal" onclick="switchPanel('terminal')">TERMINAL</span>
+                    <span class="panel-tab" id="tab-chat" onclick="switchPanel('chat')">TEAM CHAT</span>
+                </div>
+                
+                <div id="view-terminal" class="panel-view active-view">
+                    <p style="color: #3fb950; margin: 0;">user@workspace:~$ <span style="color: #cccccc; animation: blink 1s step-end infinite;">_</span></p>
+                </div>
+                
+                <div id="view-chat" class="panel-view" style="display: none;">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-msg system">🟢 시스템: 팀 채팅 서버에 연결되었습니다.</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="메시지를 입력하고 Enter를 누르세요..." onkeypress="handleChatEnter(event)">
+                        <button onclick="sendMessage()">전송</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -40,12 +59,8 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeAuthModal()">&times;</span>
             <h2 id="modalTitle">로그인</h2>
-            <div class="form-group">
-                <input type="text" id="authEmail" placeholder="이메일 또는 아이디">
-            </div>
-            <div class="form-group">
-                <input type="password" id="authPassword" placeholder="비밀번호">
-            </div>
+            <div class="form-group"><input type="text" id="authEmail" placeholder="이메일 또는 아이디"></div>
+            <div class="form-group"><input type="password" id="authPassword" placeholder="비밀번호"></div>
             <button class="submit-btn" id="modalSubmitBtn">로그인</button>
             <p class="toggle-auth" onclick="toggleAuthMode()" id="toggleAuthText">계정이 없으신가요? 회원가입</p>
         </div>
