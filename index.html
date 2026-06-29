@@ -10,6 +10,7 @@
 <body>
     <header>
         <span>Workspace - Web IDE</span>
+        <button class="auth-btn" onclick="openAuthModal()">로그인</button>
     </header>
     
     <div class="main-container">
@@ -24,7 +25,7 @@
         <div class="editor-area">
             <div class="editor">
                 <p><span style="color:#569cd6;">function</span> <span style="color:#dcdcaa;">startAssignment</span>() {</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe;">console</span>.<span style="color:#dcdcaa;">log</span>(<span style="color:#ce9178;">"파일 분리 및 모듈화 완료!"</span>);</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe;">console</span>.<span style="color:#dcdcaa;">log</span>(<span style="color:#ce9178;">"인증 시스템 모듈화 완료!"</span>);</p>
                 <p>}</p>
             </div>
             
@@ -32,6 +33,21 @@
                 <div class="terminal-header">Terminal</div>
                 <p style="color: #3fb950;">user@workspace:~$ <span style="color: #cccccc; animation: blink 1s step-end infinite;">_</span></p>
             </div>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+            <h2 id="modalTitle">로그인</h2>
+            <div class="form-group">
+                <input type="text" id="authEmail" placeholder="이메일 또는 아이디">
+            </div>
+            <div class="form-group">
+                <input type="password" id="authPassword" placeholder="비밀번호">
+            </div>
+            <button class="submit-btn" id="modalSubmitBtn">로그인</button>
+            <p class="toggle-auth" onclick="toggleAuthMode()" id="toggleAuthText">계정이 없으신가요? 회원가입</p>
         </div>
     </div>
 </body>
