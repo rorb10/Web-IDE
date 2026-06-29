@@ -40,14 +40,31 @@
   </main>
 
   <section class="bottom-panel">
-    <div class="panel-tabs">
-      <button class="active">TERMINAL</button>
-      <button>TEAM CHAT</button>
+  <div class="panel-tabs">
+    <button class="panel-tab active" onclick="showPanel('terminal')">TERMINAL</button>
+    <button class="panel-tab" onclick="showPanel('chat')">TEAM CHAT</button>
+  </div>
+
+  <div id="terminalPanel" class="panel-view terminal">
+    user@workspace:~$
+  </div>
+
+  <div id="chatPanel" class="panel-view chat-panel hidden">
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-msg system">팀 채팅에 입장했습니다.</div>
     </div>
-    <div class="terminal">
-      user@workspace:~$
+
+    <div class="chat-input-area">
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="메시지를 입력하세요."
+        onkeydown="handleChatKey(event)"
+      >
+      <button onclick="sendChatMessage()">전송</button>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- 로그인 / 회원가입 모달 -->
   <div id="authModal" class="modal hidden">
