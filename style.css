@@ -1,0 +1,17 @@
+/* style.css */
+body { margin: 0; display: flex; flex-direction: column; height: 100vh; background-color: #1e1e1e; color: #d4d4d4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+header { background-color: #333333; padding: 10px 20px; font-size: 14px; border-bottom: 1px solid #252526; display: flex; align-items: center; }
+.main-container { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 250px; background-color: #252526; padding: 15px; border-right: 1px solid #333333; }
+.sidebar h3 { font-size: 13px; color: #858585; margin-top: 0; font-weight: 600; letter-spacing: 0.5px; }
+.sidebar p { margin: 8px 0; font-size: 13px; cursor: pointer; transition: color 0.2s; }
+.sidebar p:hover { color: #ffffff; }
+.editor-area { flex: 1; display: flex; flex-direction: column; }
+.editor { flex: 1; background-color: #1e1e1e; padding: 20px; font-family: Consolas, 'Courier New', monospace; overflow-y: auto; font-size: 15px; line-height: 1.6; }
+.terminal { height: 200px; background-color: #1e1e1e; border-top: 1px solid #333333; padding: 15px; font-family: Consolas, 'Courier New', monospace; }
+.terminal-header { color: #858585; font-size: 12px; margin-bottom: 10px; text-transform: uppercase; }
+
+/* 모바일 반응형 숨김 처리 */
+@media (max-width: 768px) { 
+    .sidebar { display: none; } 
+}
