@@ -435,3 +435,53 @@ header,
     display: none;
   }
 }
+.chat-panel {
+  padding: 0;
+}
+
+.chat-msg {
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.chat-sender {
+  font-size: 11px;
+  color: #9cdcfe;
+  font-weight: 600;
+}
+
+.chat-text {
+  font-size: 13px;
+  color: #dddddd;
+}
+
+.chat-time {
+  font-size: 10px;
+  color: #858585;
+  text-align: right;
+}
+
+.chat-msg.me .chat-sender,
+.chat-msg.me .chat-text,
+.chat-msg.me .chat-time {
+  color: #ffffff;
+}
+.auth-helper {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.auth-helper button {
+  background: none;
+  border: none;
+  color: #9cdcfe;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.auth-helper button:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}

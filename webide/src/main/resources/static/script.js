@@ -9,20 +9,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================
-   Auth
+   로그인 / 회원가입 / 비밀번호 재설정
 ========================= */
+
 function openAuthModal(mode) {
   authMode = mode;
   updateModalText();
 
-  document.getElementById("authModal").classList.remove("hidden");
+  const authModal = document.getElementById("authModal");
+  if (authModal) {
+    authModal.classList.remove("hidden");
+  }
 }
 
 function closeAuthModal() {
-  document.getElementById("authModal").classList.add("hidden");
+  const authModal = document.getElementById("authModal");
+  const emailInput = document.getElementById("emailInput");
+  const passwordInput = document.getElementById("passwordInput");
 
-  document.getElementById("emailInput").value = "";
-  document.getElementById("passwordInput").value = "";
+  if (authModal) {
+    authModal.classList.add("hidden");
+  }
+
+  if (emailInput) {
+    emailInput.value = "";
+  }
+
+  if (passwordInput) {
+    passwordInput.value = "";
+  }
 }
 
 function switchAuthMode() {
@@ -32,30 +47,94 @@ function switchAuthMode() {
 
 function updateModalText() {
   const modalTitle = document.getElementById("modalTitle");
+  const passwordInput = document.getElementById("passwordInput");
   const submitBtn = document.getElementById("submitBtn");
   const switchText = document.getElementById("switchText");
+  const resetText = document.getElementById("resetText");
+
+  if (!modalTitle || !passwordInput || !submitBtn || !switchText) {
+    return;
+  }
 
   if (authMode === "login") {
     modalTitle.textContent = "로그인";
+    passwordInput.placeholder = "비밀번호";
     submitBtn.textContent = "로그인";
-    switchText.innerHTML = '계정이 없나요? <button onclick="switchAuthMode()">회원가입</button>';
-  } else {
+
+    switchText.innerHTML =
+      '계정이 없나요? <button onclick="switchAuthMode()">회원가입</button>';
+
+    if (resetText) {
+      resetText.innerHTML =
+        '<button onclick="openAuthModal(\'reset\')">비밀번호를 잊으셨나요?</button>';
+    }
+
+    return;
+  }
+
+  if (authMode === "signup") {
     modalTitle.textContent = "회원가입";
+    passwordInput.placeholder = "비밀번호";
     submitBtn.textContent = "회원가입";
-    switchText.innerHTML = '이미 계정이 있나요? <button onclick="switchAuthMode()">로그인</button>';
+
+    switchText.innerHTML =
+      '이미 계정이 있나요? <button onclick="switchAuthMode()">로그인</button>';
+
+    if (resetText) {
+      resetText.innerHTML = "";
+    }
+
+    return;
+  }
+
+  if (authMode === "reset") {
+    modalTitle.textContent = "비밀번호 재설정";
+    passwordInput.placeholder = "새 비밀번호";
+    submitBtn.textContent = "비밀번호 변경";
+
+    switchText.innerHTML =
+      '로그인 화면으로 돌아가기 <button onclick="openAuthModal(\'login\')">로그인</button>';
+
+    if (resetText) {
+      resetText.innerHTML = "";
+    }
   }
 }
 
 async function submitAuth() {
-  const email = document.getElementById("emailInput").value.trim();
-  const password = document.getElementById("passwordInput").value.trim();
+  const emailInput = document.getElementById("emailInput");
+  const passwordInput = document.getElementById("passwordInput");
+
+  if (!emailInput || !passwordInput) {
+    alert("입력창을 찾을 수 없습니다.");
+    return;
+  }
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if (!email || !password) {
     alert("이메일과 비밀번호를 입력해주세요.");
     return;
   }
 
-  const apiUrl = authMode === "login" ? "/api/login" : "/api/signup";
+  let apiUrl = "/api/login";
+  let requestBody = {
+    email: email,
+    password: password
+  };
+
+  if (authMode === "signup") {
+    apiUrl = "/api/signup";
+  }
+
+  if (authMode === "reset") {
+    apiUrl = "/api/reset-password";
+    requestBody = {
+      email: email,
+      newPassword: password
+    };
+  }
 
   try {
     const response = await fetch(apiUrl, {
@@ -63,10 +142,7 @@ async function submitAuth() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
+      body: JSON.stringify(requestBody)
     });
 
     const data = await response.json();
@@ -80,14 +156,27 @@ async function submitAuth() {
         updateLoginButton();
         closeAuthModal();
         loadChatMessages();
-      } else {
-        alert("회원가입이 완료되었습니다. 이제 로그인해주세요.");
+        return;
+      }
+
+      if (authMode === "signup") {
         authMode = "login";
         updateModalText();
+        passwordInput.value = "";
+        alert("회원가입이 완료되었습니다. 이제 로그인해주세요.");
+        return;
       }
-    } else {
-      alert(data.message || "요청 처리에 실패했습니다.");
+
+      if (authMode === "reset") {
+        authMode = "login";
+        updateModalText();
+        passwordInput.value = "";
+        alert("새 비밀번호로 로그인해주세요.");
+        return;
+      }
     }
+
+    alert(data.message || "요청 처리에 실패했습니다.");
   } catch (error) {
     console.error(error);
     alert("서버 연결 중 오류가 발생했습니다.");
@@ -97,7 +186,9 @@ async function submitAuth() {
 function updateLoginButton() {
   const loginBtn = document.getElementById("loginBtn");
 
-  if (!loginBtn) return;
+  if (!loginBtn) {
+    return;
+  }
 
   if (currentUserEmail !== "guest") {
     loginBtn.textContent = currentUserEmail + " 님";
@@ -106,51 +197,80 @@ function updateLoginButton() {
   }
 }
 
+function logout() {
+  currentUserEmail = "guest";
+  localStorage.removeItem("currentUserEmail");
+  updateLoginButton();
+}
+
 /* =========================
-   Panel
+   하단 패널 전환
 ========================= */
+
 function showPanel(panelName) {
   const terminalPanel = document.getElementById("terminalPanel");
   const chatPanel = document.getElementById("chatPanel");
   const tabs = document.querySelectorAll(".panel-tab");
 
+  if (!terminalPanel || !chatPanel) {
+    return;
+  }
+
   terminalPanel.classList.add("hidden");
   chatPanel.classList.add("hidden");
 
-  tabs.forEach(tab => tab.classList.remove("active"));
+  tabs.forEach((tab) => {
+    tab.classList.remove("active");
+  });
 
   if (panelName === "terminal") {
     terminalPanel.classList.remove("hidden");
-    tabs[0].classList.add("active");
+
+    if (tabs[0]) {
+      tabs[0].classList.add("active");
+    }
   }
 
   if (panelName === "chat") {
     chatPanel.classList.remove("hidden");
-    tabs[1].classList.add("active");
+
+    if (tabs[1]) {
+      tabs[1].classList.add("active");
+    }
+
     loadChatMessages();
   }
 }
 
 /* =========================
-   Chat
+   팀 채팅
 ========================= */
+
 async function loadChatMessages() {
   const chatMessages = document.getElementById("chatMessages");
 
-  if (!chatMessages) return;
+  if (!chatMessages) {
+    return;
+  }
 
   try {
     const response = await fetch("/api/chat/messages");
+
+    if (!response.ok) {
+      return;
+    }
+
     const messages = await response.json();
 
     chatMessages.innerHTML = "";
 
-    if (messages.length === 0) {
-      chatMessages.innerHTML = '<div class="chat-msg system">아직 채팅 메시지가 없습니다.</div>';
+    if (!messages || messages.length === 0) {
+      chatMessages.innerHTML =
+        '<div class="chat-msg system">아직 채팅 메시지가 없습니다.</div>';
       return;
     }
 
-    messages.forEach(item => {
+    messages.forEach((item) => {
       const messageDiv = document.createElement("div");
       const isMe = item.sender === currentUserEmail;
 
@@ -173,6 +293,12 @@ async function loadChatMessages() {
 
 async function sendChatMessage() {
   const chatInput = document.getElementById("chatInput");
+
+  if (!chatInput) {
+    alert("채팅 입력창을 찾을 수 없습니다.");
+    return;
+  }
+
   const message = chatInput.value.trim();
 
   if (!message) {
@@ -212,8 +338,14 @@ function handleChatKey(event) {
   }
 }
 
+/* =========================
+   공통 유틸
+========================= */
+
 function formatTime(value) {
-  if (!value) return "";
+  if (!value) {
+    return "";
+  }
 
   const date = new Date(value);
 
