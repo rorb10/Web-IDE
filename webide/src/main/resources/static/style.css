@@ -55,3 +55,168 @@ header { background-color: #333333; padding: 10px 20px; font-size: 14px; border-
 @media (max-width: 768px) { 
     .sidebar { display: none; } 
 }
+body {
+  margin: 0;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: Arial, sans-serif;
+}
+
+.top-bar {
+  height: 48px;
+  background-color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 14px;
+}
+
+#loginBtn {
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ide-layout {
+  display: flex;
+  height: calc(100vh - 230px);
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #252526;
+  padding: 12px;
+}
+
+.sidebar-title {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 8px;
+}
+
+.sidebar li.active {
+  background-color: #37373d;
+}
+
+.editor {
+  flex: 1;
+  background-color: #1e1e1e;
+}
+
+.tab {
+  padding: 10px;
+  border-bottom: 2px solid #007acc;
+}
+
+.code {
+  padding: 20px;
+  color: #9cdcfe;
+}
+
+.bottom-panel {
+  height: 180px;
+  background-color: #181818;
+  border-top: 1px solid #333;
+}
+
+.panel-tabs {
+  padding: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.panel-tabs button {
+  background: none;
+  border: none;
+  color: #ccc;
+  margin-right: 16px;
+}
+
+.panel-tabs button.active {
+  color: white;
+  border-bottom: 2px solid #007acc;
+}
+
+.terminal {
+  padding: 20px;
+  color: #4caf50;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-box {
+  width: 320px;
+  background-color: #252526;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.modal-box h2 {
+  margin-top: 0;
+}
+
+.modal-box input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  padding: 10px;
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+.modal-box button {
+  cursor: pointer;
+}
+
+#submitBtn {
+  width: 100%;
+  padding: 10px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+#switchText button {
+  background: none;
+  color: #4aa3ff;
+  border: none;
+}
+
+.close-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}

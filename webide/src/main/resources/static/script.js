@@ -1,89 +1,81 @@
-let isLoginMode = true;
+let authMode = "login";
 
-const virtualFileSystem = {
-    'index.html': `<!DOCTYPE html>\n<html lang="ko">\n<head>\n    <title>Web IDE Project</title>\n</head>\n<body>\n    <h1>Welcome to My Web IDE!</h1>\n    <p>HTML 파일이 성공적으로 로드되었습니다.</p>\n</body>\n</html>`,
-    'style.css': `/* Base Styles */\nbody {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n    font-family: sans-serif;\n}\n\nh1 {\n    color: #569cd6;\n}`,
-    'script.js': `// Application Initialization\nfunction initializeApp() {\n    console.log("Core system loaded.");\n    setupEventListeners();\n}\n\ninitializeApp();`
-};
+function openAuthModal(mode) {
+  authMode = mode;
+  updateModalText();
 
-const authModal = document.getElementById('authModal');
-const modalTitle = document.getElementById('modalTitle');
-const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-const toggleAuthText = document.getElementById('toggleAuthText');
-const currentTab = document.getElementById('currentTab');
-const codeArea = document.getElementById('codeArea');
-
-function switchFile(fileName) {
-    if (!virtualFileSystem[fileName]) return;
-    currentTab.textContent = fileName;
-    codeArea.textContent = virtualFileSystem[fileName];
-    
-    document.querySelectorAll('.file-item').forEach(item => {
-        item.classList.remove('active');
-    });
-
-    if (fileName === 'index.html') document.getElementById('file-html').classList.add('active');
-    if (fileName === 'style.css') document.getElementById('file-css').classList.add('active');
-    if (fileName === 'script.js') document.getElementById('file-js').classList.add('active');
-}
-
-function switchPanel(panelName) {
-    document.getElementById('tab-terminal').classList.remove('active');
-    document.getElementById('tab-chat').classList.remove('active');
-    document.getElementById(`tab-${panelName}`).classList.add('active');
-
-    document.getElementById('view-terminal').style.display = 'none';
-    document.getElementById('view-chat').style.display = 'none';
-    document.getElementById(`view-${panelName}`).style.display = 'flex';
-}
-
-function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const messageText = input.value.trim();
-    
-    if (messageText !== "") {
-        const chatMessages = document.getElementById('chatMessages');
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'chat-msg me';
-        msgDiv.textContent = messageText;
-        
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        input.value = "";
-    }
-}
-
-function handleChatEnter(event) {
-    if (event.key === 'Enter') {
-        sendMessage();
-    }
-}
-
-function openAuthModal() {
-    if (authModal) authModal.style.display = 'flex';
+  document.getElementById("authModal").classList.remove("hidden");
 }
 
 function closeAuthModal() {
-    if (authModal) authModal.style.display = 'none';
+  document.getElementById("authModal").classList.add("hidden");
+
+  document.getElementById("emailInput").value = "";
+  document.getElementById("passwordInput").value = "";
 }
 
-function toggleAuthMode() {
-    isLoginMode = !isLoginMode;
-    if (isLoginMode) {
-        modalTitle.textContent = '로그인';
-        modalSubmitBtn.textContent = '로그인';
-        toggleAuthText.textContent = '계정이 없으신가요? 회원가입';
+function switchAuthMode() {
+  authMode = authMode === "login" ? "signup" : "login";
+  updateModalText();
+}
+
+function updateModalText() {
+  const modalTitle = document.getElementById("modalTitle");
+  const submitBtn = document.getElementById("submitBtn");
+  const switchText = document.getElementById("switchText");
+
+  if (authMode === "login") {
+    modalTitle.textContent = "로그인";
+    submitBtn.textContent = "로그인";
+    switchText.innerHTML = '계정이 없나요? <button onclick="switchAuthMode()">회원가입</button>';
+  } else {
+    modalTitle.textContent = "회원가입";
+    submitBtn.textContent = "회원가입";
+    switchText.innerHTML = '이미 계정이 있나요? <button onclick="switchAuthMode()">로그인</button>';
+  }
+}
+
+async function submitAuth() {
+  const email = document.getElementById("emailInput").value.trim();
+  const password = document.getElementById("passwordInput").value.trim();
+
+  if (!email || !password) {
+    alert("이메일과 비밀번호를 입력해주세요.");
+    return;
+  }
+
+  const apiUrl = authMode === "login" ? "/api/login" : "/api/signup";
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      alert(data.message);
+
+      if (authMode === "login") {
+        document.getElementById("loginBtn").textContent = email + " 님";
+        closeAuthModal();
+      } else {
+        alert("회원가입이 완료되었습니다. 이제 로그인해주세요.");
+        authMode = "login";
+        updateModalText();
+      }
     } else {
-        modalTitle.textContent = '회원가입';
-        modalSubmitBtn.textContent = '가입하기';
-        toggleAuthText.textContent = '이미 계정이 있으신가요? 로그인';
+      alert(data.message || "요청 처리에 실패했습니다.");
     }
+  } catch (error) {
+    console.error(error);
+    alert("서버 연결 중 오류가 발생했습니다.");
+  }
 }
-
-window.onclick = function(event) {
-    if (event.target === authModal) closeAuthModal();
-}
-
-window.onload = function() {
-    switchFile('index.html');
-};

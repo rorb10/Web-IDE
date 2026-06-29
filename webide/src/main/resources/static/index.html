@@ -1,69 +1,73 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web IDE</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <title>Web IDE</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <span>Workspace - Web IDE</span>
-        <button class="auth-btn" onclick="openAuthModal()">로그인</button>
-    </header>
-    
-    <div class="main-container">
-        <div class="sidebar">
-            <h3>EXPLORER</h3>
-            <div class="folder-section">
-                <span class="folder-title">src</span>
-                <div class="file-list">
-                    <p class="file-item active" id="file-html" onclick="switchFile('index.html')">index.html</p>
-                    <p class="file-item" id="file-css" onclick="switchFile('style.css')">style.css</p>
-                    <p class="file-item" id="file-js" onclick="switchFile('script.js')">script.js</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="editor-area">
-            <div class="editor-tab" id="currentTab">index.html</div>
-            <div class="editor">
-                <pre><code id="codeArea"></code></pre>
-            </div>
-            
-            <div class="bottom-panel">
-                <div class="panel-tabs">
-                    <span class="panel-tab active" id="tab-terminal" onclick="switchPanel('terminal')">TERMINAL</span>
-                    <span class="panel-tab" id="tab-chat" onclick="switchPanel('chat')">TEAM CHAT</span>
-                </div>
-                
-                <div id="view-terminal" class="panel-view active-view">
-                    <p style="color: #3fb950; margin: 0;">user@workspace:~$ <span style="color: #cccccc; animation: blink 1s step-end infinite;">_</span></p>
-                </div>
-                
-                <div id="view-chat" class="panel-view" style="display: none;">
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="chat-msg system">🟢 시스템: 팀 채팅 서버에 연결되었습니다.</div>
-                    </div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="메시지를 입력하고 Enter를 누르세요..." onkeypress="handleChatEnter(event)">
-                        <button onclick="sendMessage()">전송</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <header class="top-bar">
+    <div>Workspace - Web IDE</div>
+    <button id="loginBtn" onclick="openAuthModal('login')">로그인</button>
+  </header>
 
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeAuthModal()">&times;</span>
-            <h2 id="modalTitle">로그인</h2>
-            <div class="form-group"><input type="text" id="authEmail" placeholder="이메일 또는 아이디"></div>
-            <div class="form-group"><input type="password" id="authPassword" placeholder="비밀번호"></div>
-            <button class="submit-btn" id="modalSubmitBtn">로그인</button>
-            <p class="toggle-auth" onclick="toggleAuthMode()" id="toggleAuthText">계정이 없으신가요? 회원가입</p>
-        </div>
+  <main class="ide-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title">EXPLORER</div>
+      <ul>
+        <li>src</li>
+        <li class="active">index.html</li>
+        <li>style.css</li>
+        <li>script.js</li>
+      </ul>
+    </aside>
+
+    <section class="editor">
+      <div class="tab">index.html</div>
+      <pre class="code">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+  &lt;title&gt;Web IDE Project&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome to My Web IDE!&lt;/h1&gt;
+  &lt;p&gt;로그인/회원가입 기능이 연결되었습니다.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+      </pre>
+    </section>
+  </main>
+
+  <section class="bottom-panel">
+    <div class="panel-tabs">
+      <button class="active">TERMINAL</button>
+      <button>TEAM CHAT</button>
     </div>
+    <div class="terminal">
+      user@workspace:~$
+    </div>
+  </section>
+
+  <!-- 로그인 / 회원가입 모달 -->
+  <div id="authModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 id="modalTitle">로그인</h2>
+
+      <input id="emailInput" type="email" placeholder="이메일">
+      <input id="passwordInput" type="password" placeholder="비밀번호">
+
+      <button id="submitBtn" onclick="submitAuth()">로그인</button>
+
+      <p id="switchText">
+        계정이 없나요?
+        <button onclick="switchAuthMode()">회원가입</button>
+      </p>
+
+      <button class="close-btn" onclick="closeAuthModal()">닫기</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
